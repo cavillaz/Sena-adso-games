@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Charts with JSON Data</title>
+<!-- Carga la biblioteca de Google Charts -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    // Carga la biblioteca de visualización de Google Charts
+    google.charts.load('current', {'packages':['corechart']});
+    
+    // Llama a la función de dibujo cuando la biblioteca de visualización de Google Charts esté cargada
+    google.charts.setOnLoadCallback(drawChart);
+    
+    // Define la función de dibujo que se llamará cuando Google Charts esté cargado
+    function drawChart() {
+        // Cargar el archivo JSON
+        fetch('datos.json')
+            .then(response => response.json())
+            .then(data => {
+                // Procesa los datos para Google Charts
+                const chartData = [['Type', 'Value']];
+                data.forEach(item => {
+                    chartData.push([item.type, item.value]);
+                });
+
+                // Crea y dibuja el gráfico
+                var data = google.visualization.arrayToDataTable(chartData);
+                var options = {
+                    title: 'Product Values by Type',
+                    legend: { position: 'none' },
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            })
+            .catch(error => console.error('Error fetching JSON:', error));
+    }
+</script>
+</head>
+<body>
+<!-- Contenedor para el gráfico -->
+<div id="chart_div" style="width: 900px; height: 500px;"></div>
+</body>
+</html>
